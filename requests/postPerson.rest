@@ -5,3 +5,21 @@ Content-Type: application/json
     "name": "dfsggdswdfgs",
     "number": 4556754865976
 }
+
+###
+
+POST http://localhost:3001/api/persons/
+Content-Type: application/json
+
+{
+    "name": "dfsggdswdfgs"
+}
+
+###
+
+POST http://localhost:3001/api/persons/
+Content-Type: application/json
+
+{
+    "number": 4556754865976
+}
