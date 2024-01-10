@@ -22,6 +22,22 @@ app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
 
+app.post('/api/persons',
+  express.json(),
+  (req, res) => {
+    const id = Math.ceil(Math.random() * 1e9)
+    const { name, number } = req.body
+
+    const newPerson = {
+      id,
+      name,
+      number
+    }
+
+    persons.push(newPerson)
+    res.json(newPerson)
+})
+
 app.delete('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id)
   persons = persons.filter(p => p.id !== id)
