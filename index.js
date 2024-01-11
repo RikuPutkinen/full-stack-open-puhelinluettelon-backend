@@ -11,7 +11,13 @@ let persons = [
   { id: 4, name: 'Mary Poppendieck', number: '39-23-6423122' }
 ]
 
-app.use(morgan('tiny'))
+
+morgan.token('data', (req, res) => JSON.stringify(req.body))
+
+app.use(morgan('tiny', {
+  skip: (req, res) => req.method === "POST"
+}))
+
 
 app.get('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id)
@@ -27,6 +33,7 @@ app.get('/api/persons', (req, res) => {
 
 app.post('/api/persons',
   express.json(),
+  morgan(':method :url :status :res[content-length] - :response-time ms :data'),
   (req, res) => {
     const id = Math.ceil(Math.random() * 1e9)
     const { name, number } = req.body
