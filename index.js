@@ -1,4 +1,5 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 const PORT = 3001
@@ -9,6 +10,8 @@ let persons = [
   { id: 3, name: 'Dan Abramov', number: '12-43-234345' },
   { id: 4, name: 'Mary Poppendieck', number: '39-23-6423122' }
 ]
+
+app.use(morgan('tiny'))
 
 app.get('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id)
