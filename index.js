@@ -1,8 +1,9 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
 let persons = [
   { id: 1, name: 'Arto Hellas', number: '040-123456' },
@@ -11,13 +12,12 @@ let persons = [
   { id: 4, name: 'Mary Poppendieck', number: '39-23-6423122' }
 ]
 
-
 morgan.token('data', (req, res) => JSON.stringify(req.body))
 
+app.use(cors())
 app.use(morgan('tiny', {
   skip: (req, res) => req.method === "POST"
 }))
-
 
 app.get('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id)
