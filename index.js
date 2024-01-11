@@ -14,6 +14,7 @@ let persons = [
 
 morgan.token('data', (req, res) => JSON.stringify(req.body))
 
+app.use(express.static('dist'))
 app.use(cors())
 app.use(morgan('tiny', {
   skip: (req, res) => req.method === "POST"
