@@ -15,9 +15,13 @@ app.use(morgan('tiny', {
   skip: (req, res) => req.method === "POST"
 }))
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   Person.findById(req.params.id)
-    .then(person => res.json(person))
+    .then(person => {
+      if (person) res.json(person)
+      else res.status(404).end()
+    })
+    .catch(err => next(err))
 })
 
 app.get('/api/persons', (req, res) => {
@@ -28,7 +32,7 @@ app.get('/api/persons', (req, res) => {
 app.post('/api/persons',
   express.json(),
   morgan(':method :url :status :res[content-length] - :response-time ms :data'),
-  (req, res) => {
+  (req, res, next) => {
     const { name, number } = req.body
 
     if (!name) {
@@ -47,20 +51,33 @@ app.post('/api/persons',
       number
     })
 
-    newPerson.save().then(person => {
-      res.json(person)
-    })
+    newPerson.save()
+      .then(person => {
+        res.json(person)
+      })
+      .catch(err => next(err))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
   Person.findByIdAndDelete(id)
     .then(r => res.status(204).end())
+    .catch(err => next(err))
 })
 
 app.get('/info', (req, res) => {
   const date = new Date()
   res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${date}</p>`)
+})
+
+app.use((err, req, res, next) => {
+  console.log(err.message)
+
+  if (err.name === "CastError") {
+    return res.status(400).send({ error: 'invalid id' })
+  }
+
+  next(err)
 })
 
 app.listen(PORT, () => {

@@ -3,3 +3,7 @@ GET http://localhost:3001/api/persons/65a58a7aa35ff88b4bc49e97
 ###
 
 GET http://localhost:3001/api/persons/2d23a5985583a5cda0445e72
+
+###
+
+GET http://localhost:3001/api/persons/2
