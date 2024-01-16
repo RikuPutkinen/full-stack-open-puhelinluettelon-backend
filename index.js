@@ -29,7 +29,6 @@ app.post('/api/persons',
   express.json(),
   morgan(':method :url :status :res[content-length] - :response-time ms :data'),
   (req, res) => {
-    const id = Math.ceil(Math.random() * 1e9)
     const { name, number } = req.body
 
     if (!name) {
@@ -42,20 +41,15 @@ app.post('/api/persons',
         error: 'number missing'
       })
     }
-    if (persons.find(p => p.name === name)) {
-      return res.status(400).json({
-        error: 'name must be unique'
-      })
-    }
 
-    const newPerson = {
-      id,
+    const newPerson = new Person({
       name,
       number
-    }
+    })
 
-    persons.push(newPerson)
-    res.json(newPerson)
+    newPerson.save().then(person => {
+      res.json(person)
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
