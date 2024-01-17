@@ -112,7 +112,11 @@ app.use((err, req, res, next) => {
   if (err.name === "CastError") {
     return res.status(400).send({ error: 'invalid id' })
   }
-
+  if (err.name === "ValidationError") {
+    console.log(err)
+    return res.status(400).send({ error: err.message })
+  }
+  
   next(err)
 })
 
