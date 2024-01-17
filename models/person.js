@@ -4,7 +4,7 @@ const mongoURL = process.env.MONGO_URL
 
 console.log(`Connecting to ${mongoURL}`)
 mongoose.connect(mongoURL)
-  .then(res => console.log('Connected Successfully'))
+  .then(() => console.log('Connected Successfully'))
   .catch(err => console.error('Connection failed:', err.message))
 
 const personSchema = new mongoose.Schema({

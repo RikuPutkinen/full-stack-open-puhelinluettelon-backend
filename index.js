@@ -7,12 +7,12 @@ const Person = require('./models/person')
 
 const PORT = process.env.PORT || 3001
 
-morgan.token('data', (req, res) => JSON.stringify(req.body))
+morgan.token('data', (req) => JSON.stringify(req.body))
 
 app.use(express.static('dist'))
 app.use(cors())
 app.use(morgan('tiny', {
-  skip: (req, res) => req.method === "POST" || req.method === "PUT"
+  skip: (req) => req.method === 'POST' || req.method === 'PUT'
 }))
 
 app.get('/api/persons/:id', (req, res, next) => {
@@ -56,7 +56,8 @@ app.post('/api/persons',
         res.json(person)
       })
       .catch(err => next(err))
-})
+  }
+)
 
 app.put('/api/persons/:id',
   express.json(),
@@ -88,35 +89,35 @@ app.put('/api/persons/:id',
     )
       .then(r => res.json(r))
       .catch(err => next(err))
-})
+  }
+)
 
 app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
   Person.findByIdAndDelete(id)
-    .then(r => res.status(204).end())
+    .then(() => res.status(204).end())
     .catch(err => next(err))
 })
 
 app.get('/info', (req, res) => {
   const date = new Date()
   Person.find({})
-    .then(persons => 
+    .then(persons =>
       res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${date}</p>`)
     )
-  
 })
 
 app.use((err, req, res, next) => {
   console.log(err.message)
 
-  if (err.name === "CastError") {
+  if (err.name === 'CastError') {
     return res.status(400).send({ error: 'invalid id' })
   }
-  if (err.name === "ValidationError") {
+  if (err.name === 'ValidationError') {
     console.log(err)
     return res.status(400).send({ error: err.message })
   }
-  
+
   next(err)
 })
 
