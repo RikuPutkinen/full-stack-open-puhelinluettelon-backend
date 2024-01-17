@@ -12,7 +12,7 @@ morgan.token('data', (req, res) => JSON.stringify(req.body))
 app.use(express.static('dist'))
 app.use(cors())
 app.use(morgan('tiny', {
-  skip: (req, res) => req.method === "POST"
+  skip: (req, res) => req.method === "POST" || req.method === "PUT"
 }))
 
 app.get('/api/persons/:id', (req, res, next) => {
@@ -55,6 +55,38 @@ app.post('/api/persons',
       .then(person => {
         res.json(person)
       })
+      .catch(err => next(err))
+})
+
+app.put('/api/persons/:id',
+  express.json(),
+  morgan(':method :url :status :res[content-length] - :response-time ms :data'),
+  (req, res, next) => {
+    const { name, number } = req.body
+    const id = req.params.id
+
+    if (!name) {
+      return res.status(400).json({
+        error: 'name missing'
+      })
+    }
+    if (!number) {
+      return res.status(400).json({
+        error: 'number missing'
+      })
+    }
+
+    const updatedPerson = {
+      name,
+      number
+    }
+
+    Person.findByIdAndUpdate(
+      id,
+      updatedPerson,
+      { new: true }
+    )
+      .then(r => res.json(r))
       .catch(err => next(err))
 })
 
