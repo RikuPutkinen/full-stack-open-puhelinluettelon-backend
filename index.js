@@ -99,7 +99,11 @@ app.delete('/api/persons/:id', (req, res, next) => {
 
 app.get('/info', (req, res) => {
   const date = new Date()
-  res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${date}</p>`)
+  Person.find({})
+    .then(persons => 
+      res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${date}</p>`)
+    )
+  
 })
 
 app.use((err, req, res, next) => {
